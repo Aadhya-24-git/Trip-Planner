@@ -3,7 +3,7 @@ services:
     name: yatraplan-api
     env: python
     rootDir: backend
-    buildCommand: pip install -r requirements.txt && python database/seed.py
+    buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
@@ -15,4 +15,4 @@ services:
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: 10080
       - key: CORS_ORIGINS
-        sync: false
+        value: "*"

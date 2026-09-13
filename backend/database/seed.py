@@ -20,9 +20,6 @@ from app.models.food import FoodItem
 from app.models.user import User
 from app.auth import get_password_hash
 
-# Ensure all tables exist
-Base.metadata.create_all(bind=engine)
-
 DESTINATIONS_DATA = [
     # 1. Munnar, Kerala
     {
@@ -1129,6 +1126,7 @@ DESTINATIONS_DATA = [
 ]
 
 def seed_database():
+    Base.metadata.create_all(bind=engine)
     db: Session = SessionLocal()
     try:
         print("🌱 Seeding database with destinations, attractions, foods, and demo user...")
