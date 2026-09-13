@@ -3,16 +3,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 from app.config import settings
 
-db_url = settings.DATABASE_URL or "sqlite:///./yatraplan.db"
+db_url = (settings.DATABASE_URL or "").strip() or "sqlite:///./yatraplan.db"
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 connect_args = {}
 if db_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
-else:
-    # Ensure SSL is requested for cloud PostgreSQL (Neon) if not already in URL
-    if "sslmode" not in db_url and "neon.tech" in db_url:
+elif db_url.startswith("postgresql"):
+    # Ensure SSL is requested for cloud PostgreSQL (Render, Neon, Supabase, AWS RDS, etc.)
+    if "sslmode" not in db_url:
         connect_args["sslmode"] = "require"
 
 engine = create_engine(
