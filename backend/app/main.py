@@ -62,6 +62,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Middleware to gracefully handle double /api prefixes (e.g. /api/api/recommendations -> /api/recommendations)
+@app.middleware("http")
+async def strip_duplicate_api_prefix(request: Request, call_next):
+    if request.scope.get("path", "").startswith("/api/api/"):
+        request.scope["path"] = request.scope["path"].replace("/api/api/", "/api/", 1)
+    return await call_next(request)
+
 # Global exception handler ensures 500 errors include CORS headers and do not get blocked by browser CORS policy
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
